@@ -105,7 +105,7 @@ class MySQLDataBase {
     public function openDB() {
         try {
             if (!$this->isOpenDB()) {
-                $this->db = new PDO($this->mysql_dsn, $this->username, $this->password, $this->pdoOptions);
+                $this->db = new PDO($this->mysql_dsn, $this->username, $this->password);
             }
         } catch (PDOException $exc) {
             $this->responseCode = -1;
@@ -387,10 +387,11 @@ class MySQLDataBase {
 
             // Obtenemos la sentencia sql preparada
             $statement = $this->getPreparedStatement($sql);
-
+            
             // Hacemos un binValue de los datos
             $statement = $this->bindValues($statement, $values);
             // Devolvemos el resultado de ejecutar el método getResult
+            
             return $this->getInsertResult($statement);
         } else {
             $this->exception = ExceptionCodes::DATABASE_NOT_CONNECT;
@@ -464,14 +465,13 @@ class MySQLDataBase {
      * @return Integer number of row affected or -1 in case of error
      * @throws Exception if table is null or empty
      */
-    public function delete(string $table, $where, $whereArgs) {
+    public function delete($table, $where, $whereArgs) {
         if ($this->isOpenDB()) {
-
             if (is_null($table) || empty($table)) {
                 $this->exception = ExceptionCodes::NULL_TABLE;
                 throw new Exception("table cannot be null or empty", NULL, NULL);
             }
-            // Preparamos la cabecera de la sentencia update
+            // Preparamos la cabecera de la sentencia delete
             $sql = "delete from " . $table;
 
             if (!is_null($where) || !empty($where)) {
@@ -557,7 +557,6 @@ class MySQLDataBase {
      * @return Array with data or null (Array => [row1 => [column1 => value1, 0 => value1, column2 => value2, 1 => value2, ...]])
      */
     private function getData(PDOStatement $statement) {
-
         // Comprobamos la ejecución de la sentencia
         if ($statement->execute()) {
             // Si es correcto comprobamos el número de filas para actuar en conssecuencia
@@ -676,6 +675,9 @@ class MySQLDataBase {
         switch ($this->responseCode){
             case MySQLCodes::INVALID_VALUE:
                 $this->exception = ExceptionCodes::INVALID_VALUE;
+                break;
+            case MySQLCodes::DATA_TRUNCATED:
+                $this->exception = ExceptionCodes::DATA_TRUNCATED;
                 break;
             default :
                 $this->exception = ExceptionCodes::UNKNOWN_ERROR;
@@ -910,7 +912,6 @@ class MySQLOperation {
     /**
      * Setter for group by clause
      * @param string $groupBy
-     * @throws Exception if operation isn`t select
      */
     public function setGroupBy($groupBy) {
         $this->groupBy = $groupBy;
@@ -927,7 +928,6 @@ class MySQLOperation {
     /**
      * Setter for having clause
      * @param string $having
-     * @throws Exception if operation isn`t select
      */
     public function setHaving($having) {
         $this->having = $having;
@@ -944,7 +944,6 @@ class MySQLOperation {
     /**
      * Setter for order by
      * @param string $orderBy
-     * @throws Exception if operation isn`t select
      */
     public function setOrderBy($orderBy) {
         $this->orderBy = $orderBy;
@@ -961,7 +960,6 @@ class MySQLOperation {
     /**
      * Setter for limit by clause
      * @param string $limit
-     * @throws Exception if operation isn`t select
      */
     public function setLimit($limit) {
         $this->limit = $limit;
@@ -978,7 +976,6 @@ class MySQLOperation {
     /**
      * Setter for values for insert or update operation (make like this ==>> [ column1 => value1, column2 => value2, ..., columnN => valueN])
      * @param Array $values
-     * @throws Exception if operation aren't insert or update
      */
     public function setValues($values) {
         $this->values = $values;
@@ -995,7 +992,6 @@ class MySQLOperation {
     /**
      * Setter for sql statement for raw query or stored functions or procedure
      * @param string $statement sql statement
-     * @throws Exception if operation aren't stored function, stored procedure or raw query
      */
     public function setStatement($statement) {
         $this->statement = $statement;
@@ -1012,7 +1008,6 @@ class MySQLOperation {
     /**
      * Setter for values to bind in query
      * @param Array $bindValues values to bind in query
-     * @throws Exception if operation aren't stored function, stored procedure or raw query
      */
     public function setBindValues($bindValues) {
         $this->bindValues = $bindValues;
@@ -1020,7 +1015,7 @@ class MySQLOperation {
 
     /**
      * Getter for return last id
-     * @return Array values to bind in query
+     * @return Boolean return last Id
      */
     public function getReturnId() {
         return $this->returnId;
@@ -1028,8 +1023,7 @@ class MySQLOperation {
 
     /**
      * Setter for return last id
-     * @param Array $bindValues values to bind in query
-     * @throws Exception if operation aren't stored function, stored procedure or raw query
+     * @param Boolean $returnId return last id
      */
     public function setReturnId($returnId) {
         $this->returnId = $returnId;
@@ -1081,6 +1075,7 @@ class ExceptionCodes{
     const SYNTAX_ERROR = 7;
     const NULL_COLUMN = 8;
     const INVALID_VALUE = 9;
+    const DATA_TRUNCATED = 11;
     
     
 }
@@ -1098,4 +1093,5 @@ class MySQLCodes {
     const FOREIGN_KEY_CONSTRAINT_FAILS = 1452;
     const COLUMN_NULL = 1048;
     const INVALID_VALUE = 1366;
+    const DATA_TRUNCATED = 1265;
 }

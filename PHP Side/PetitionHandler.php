@@ -13,22 +13,21 @@
  */
 
 require './DataBase.Class.php';
-//header('Content-type: application/json');
+header('Content-type: application/json');
 $postData = file_get_contents('php://input');
 $values = split("&", $postData);
 $post = array();
-for ($i = 0; $i < count($values); $i++) {
-    $tmp = split("=", $values[$i]);
-    $post[$tmp[0]] = $tmp[1];
-}
-$isTransaction = $post["isTransaction"] === 'true';
+$post["isTransaction"] = split("=", $values[0]);
+$post["data"] = substr($values[1], strlen("data="));
+$isTransaction = $post["isTransaction"];
 $json = $post["data"];
 $operationArray = json_decode(utf8_encode($json), true);
 $datasource = new MySQLDataBase("mysql:dbname=test;host=127.0.0.1;charset=UTF8", "root", "kankone");
 
+
 try {
     if ($datasource->openDB()) {
-        if ($isTransaction) {
+        if ($isTransaction[1] === "true") {
             
             $operations = array();
 
@@ -50,7 +49,6 @@ try {
         } else {
             $operation = MySQLOperation::createOperation($operationArray);
             $response = null;
-
             try {
                 $data = $datasource->executeOperation($operation);
                 $response = Response::makeCustomResponse($datasource->getResponseCode(), $datasource->getDBMessage(), $data, $datasource->getException());
