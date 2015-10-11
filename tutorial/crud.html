@@ -7,13 +7,13 @@
 	content="width=device-width, initial-scale=1, maximum-scale=1">
 <link href='https://fonts.googleapis.com/css?family=Architects+Daughter'
 	rel='stylesheet' type='text/css'>
-<link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css"
-	media="screen">
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/stylesheet.css" media="screen">
 <link rel="stylesheet" type="text/css"
 	href="../stylesheets/github-light.css" media="screen">
 <link rel="stylesheet" type="text/css" href="../stylesheets/print.css"
 	media="print">
-
+<link rel="stylesheet" type="text/css" href="../stylesheets/code.css">
 <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -22,14 +22,15 @@
 </head>
 
 <body>
+	<a id="top"></a>
 	<header>
 		<div class="inner">
-			<h1>Java-Php Database Connector</h1>
-			<h2>Repository for development a Database connector with java
-				and php. It is specially for Android because JDBC is not
-				recommended. This Connector make PHP Post petitions for connect to
-				database with PDO library in PHP. In Java use apache commons
-				libraries and JSON libraries</h2>
+			<h1>CRUD Operations</h1>
+			<h2>CRUD operations are the most typical operations in a
+				database. CRUD means Create, Read, Update and Delete. In SQL are
+				Insert, Select, Update and Delete commands. In this section, we will
+				explain how to make this operations with Java-Php Database
+				Connector. They are very easy!</h2>
 			<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"
 				class="button"><small>View project on</small> GitHub</a>
 		</div>
@@ -38,68 +39,547 @@
 	<div id="content-wrapper">
 		<div class="inner clearfix">
 			<section id="main-content">
+
+				<div class="nav">
+					<ul class="navElement">
+						<li class="navItem"><a class="btn" href="#select">Select</a></li>
+						<li class="navItem"><a class="btn" href="#insert">Insert</a></li>
+						<li class="navItem"><a class="btn" href="#update">Update</a></li>
+						<li class="navItem"><a class="btn" href="#delete">Delete</a></li>
+					</ul>
+				</div>
+
+				<a id="select"></a>
+
 				<h3>
 					<a id="welcome-to-github-pages" class="anchor"
 						href="#welcome-to-github-pages" aria-hidden="true"><span
-						class="octicon octicon-link"></span></a>Java-Php Database Connector
+						class="octicon octicon-link"></span></a>Select or Read
 				</h3>
 
 				<p>
-					In this page we explain how to use our Database Connector.Its really easy and its totally prepared for work with MVC pattern.
-					
-					The JavaPhpDbConnector was created for make connections to database with PHP files and PDO library. This idea born when we working an Android project and need to connect to external database in our server. In this case, its recommended make the connections to database with PHP Post petitions and HTTPS protocol for best security. For solve this problem we decide to develop this connector.
-					
-					With JavaPhpDbConnector you have all the control of your database. Can execute all CRUD operations and more. You can create or alter tables, create or execute functions or procedures...
-					
-					It is similar to SQLite Android Connector but you can management all MySQL Databases remotely or locally.
+					<b>Example with basic query for get all data of one table</b>
 				</p>
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">SelectExample</b> {
+	
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
+						class="var">args</b>) {
+		
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
+						class="var">url</b>);
+		
+		<b class="comment">// Table Names</b>
+		<b class="class">String</b> <b class="var">tableOne</b> = <b
+						class="string">"tableOne"</b>;
+				
+		<b class="comment">// Query</b>
+		<b class="keyword">try</b> {
+			<b class="comment">// Get data returned in a DataSet. 
+			//All values are null except the table name for retrieve all values of all rows</b>
+			<b class="class">DataSet</b> <b class="var">set</b> = <b class="var">db</b>.query(<b
+						class="var">tableOne</b>, <b class="keyword">null</b>, <b
+						class="keyword">null</b>, <b class="keyword">null</b>, <b
+						class="keyword">null</b>, <b class="keyword">null</b>, <b
+						class="keyword">null</b>, <b class="keyword">null</b>);
+			
+			<b class="keyword">if</b>(<b class="var">set</b>.rowCount() > 0){
+				<b class="comment">// Show data</b>
+				<b class="keyword">for</b> (<b class="class">ColumnSet</b> <b
+						class="var">row</b> : <b class="var">set</b>) {
+					<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"ROW"</b>));
+					<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldOne => "</b> + <b class="var">row</b>.getInt(<b
+						class="string">"to_fieldOne"</b>));
+					<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldTwo => "</b> + <b class="var">row</b>.getString(<b
+						class="string">"to_fieldTwo"</b>));
+					<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldThree => "</b> + <b class="var">row</b>.getBoolean(<b
+						class="string">"to_fieldThree"</b>));
+					<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldFour => "</b> + <b class="var">row</b>.getDouble(<b
+						class="string">"to_fieldFour"</b>));
+				}
+			}
+			
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// Handler exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// Handler exception</b>
+		}		
+	}
+}
+
+<b class="comment">
++----------------------------------------------------------------------------------+
+|	Output:			
++----------------------------------------------------------------------------------+
+|	ROW
+|	FieldOne => 1										
+|	FieldTwo => Field Two Value (Row 1)						
+|	FieldThree => true													
+|	FieldFour => 15.2
+|	ROW												
+|	FieldOne => 2														
+|	FieldTwo => Field Two Value (Row 2)								
+|	FieldThree => false												
+|	FieldFour => 84516.52
+|	ROW														   
+|	FieldOne => 3																   
+|	FieldTwo => Field Two Value (Row 3)											   
+|	FieldThree => false															   
+|	FieldFour => 359.52	
+|	ROW														   	
+|	FieldOne => 4																   
+|	FieldTwo => Field Two Value (Row 4)											   
+|	FieldThree => true															   
+|	FieldFour => 20.7															   
++----------------------------------------------------------------------------------+
+</b>
+					
+</pre>
+				<a class="top" href="#top">Go to top</a>
+
+				<p>
+					<b>Example for parameterized query with column projection and
+						where clause with where arguments</b>
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">SelectExample</b> {
+
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
+						class="var">args</b>) {
+		
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php";</b>
+		
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
+						class="var">url</b>);
+		
+		<b class="comment">// Table Names</b>
+		<b class="class">String</b> <b class="var">tableOne</b> = <b
+						class="string">"tableOne"</b>;
+		
+		<b class="comment">// projection with only three columns</b>
+		<b class="class">String</b>[] <b class="var">projection</b> = { <b
+						class="string">"to_fieldOne"</b>, <b class="string">"to_fieldTwo"</b>, <b
+						class="string">"to_fieldFour"</b> };
+		
+		<b class="comment">// Where clause</b>
+		<b class="class">String</b> <b class="var">where</b> = <b
+						class="string">"to_fieldOne = :to_fieldOne"</b>;
+		
+		<b class="comment">// Where arguments (mapping values with ":")</b>
+		<b class="class">ColumnSet</b> <b class="var">whereArgs</b> = <b
+						class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="var">whereArgs</b>.put(<b class="string">"to_fieldOne"</b>, 2);
+		
+		<b class="comment">// Group by clause</b>
+		<b class="class">String</b> <b class="var">groupBy</b> = <b
+						class="keyword">null</b>;
+		
+		<b class="comment">// Having clause</b>
+		<b class="class">String</b> <b class="var">having</b> = <b
+						class="keyword">null</b>;
+		
+		<b class="comment">// OrderBy clause</b>
+		<b class="class">String</b> <b class="var">orderBy</b> = <b
+						class="keyword">null</b>;
+		
+		<b class="comment">// limit clause</b>
+		<b class="class">Integer</b> <b class="var">limit</b> = <b
+						class="keyword">null</b>;
+				
+		<b class="comment">// Query</b>
+		<b class="keyword">try</b> {
+			<b class="comment">// Get data returned in a DataSet</b>
+			<b class="class">DataSet</b> <b class="var">set</b> = <b class="var">db</b>.query(<b
+						class="var">tableOne</b>, <b class="var">projection</b>, <b
+						class="var">where</b>, <b class="var">whereArgs</b>, <b
+						class="var">groupBy</b>, <b class="var">having</b>, <b class="var">orderBy</b>, <b
+						class="var">limit</b>);
+			
+			<b class="keyword">if</b>(<b class="var">set</b>.rowCount() > 0){
+				<b class="comment">// Show data</b>
+				<b class="keyword">for</b> (<b class="class">ColumnSet</b> <b
+						class="var">row</b> : <b class="var">set</b>) {
+					<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldOne => "</b> + <b class="var">row</b>.getInt(<b
+						class="string">"to_fieldOne"</b>));
+					<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldTwo => "</b> + <b class="var">row</b>.getString(<b
+						class="string">"to_fieldTwo"</b>));
+					<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldFour => "</b> + <b class="var">row</b>.getDouble(<b
+						class="string">"to_fieldFour"</b>));
+				}
+			}
+			
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// Handler exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// Handler exception</b>
+		}
+	}
+}
+
+<b class="comment">
++----------------------------------------------------------------------------------+
+|	Output:						
++----------------------------------------------------------------------------------+
+|	FieldOne => 2																   
+|	FieldTwo => Field Two Value (Row 2)											   
+|	FieldFour => 84516.52														   
++----------------------------------------------------------------------------------+
+</b>
+
+					</pre>
+
+				<a class="top" href="#top">Go to top</a>
+
+				<p>
+					<b>Example with parameterized query with two tables and join
+						operation </b>
+				</p>
+				<pre class="code">
+				
+<b class="keyword">public class</b> <b class="class">SelectExample </b>{
+	
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
+						class="var">args</b>) {
+		
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
+						class="var">url</b>);
+		
+		<b class="comment">// Table Names</b>
+		<b class="class">String</b> <b class="var">tableOne</b> = <b
+						class="string">"tableOne"</b>;
+		<b class="class">String</b> <b class="var">tableTwo</b> = <b
+						class="string">"tableTwo"</b>;
+		
+		<b class="comment">// join tables</b>
+		<b class="class">String</b> <b class="var">join</b> = <b class="var">tableOne</b> + <b
+						class="string">" join "</b> + <b class="var">tableTwo</b> + <b
+						class="string">" on to_fieldOne = tt_fieldThree"</b>;
+		
+		<b class="comment">// projection 2 fields from tableOne and 2 fields from tableTwo</b>
+		<b class="class">String</b>[] <b class="var">projection</b> = { <b
+						class="string">"to_fieldOne"</b>, <b class="string">"tt_fieldThree"</b>, <b
+						class="string">"to_fieldTwo"</b>, <b class="string">"tt_fieldFour"</b> };
+				
+		<b class="comment">// where clause (mapping values with ":")</b>
+		<b class="class">String</b> <b class="var">where</b> = <b
+						class="string">"to_fieldOne = :to_fieldOne"</b>;
+		
+		<b class="comment">// where Args for parameterized query</b>
+		<b class="class">ColumnSet</b> <b class="var">whereArgs</b> = <b
+						class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="class">whereArgs</b>.put(<b class="string">"to_fieldOne"</b>, 2);
+		
+		<b class="comment">// Query</b>
+		<b class="keyword">try</b> {
+			<b class="comment">// Get data returned in a DataSet</b>
+			<b class="class">DataSet</b> <b class="var">set</b> = <b class="var">db</b>.query(join, projection, where, whereArgs, null, null, null, null);
+			
+			<b class="keyword">for</b> (<b class="class">ColumnSet</b> <b
+						class="var">row</b> : <b class="var">set</b>) {
+				<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldOne (tableOne) => "</b> + <b class="var">row</b>.getInt(<b
+						class="string">"to_fieldOne"</b>));
+				<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldThree (tableTwo) => "</b> + <b class="var">row</b>.getString(<b
+						class="string">"tt_fieldThree"</b>));
+				<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldTwo (tableOne) => "</b> + <b class="var">row</b>.getString(<b
+						class="string">"to_fieldTwo"</b>));
+				<b class="class">System</b>.<b class="string">out</b>.println(<b
+						class="string">"FieldFour (tableTwo) => "</b> + <b class="var">row</b>.getString(<b
+						class="string">"tt_fieldFour"</b>));
+			}
+			
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		}	
+	}
+}
+
+<b class="comment">
++----------------------------------------------------------------------------------+
+|	Output:						
++----------------------------------------------------------------------------------+
+|	FieldOne (tableOne) => 2
+|	FieldThree (tableTwo) => 2
+|	FieldTwo (tableOne) => Field Two Value (Row 2)
+|	FieldFour (tableTwo) => Field Four Value (Row 2)						   
++----------------------------------------------------------------------------------+
+</b>
+				
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
 
 				<h3>
 					<a id="designer-templates" class="anchor"
 						href="#designer-templates" aria-hidden="true"><span
-						class="octicon octicon-link"></span></a>Specially for Android
+						class="octicon octicon-link"></span></a>Insert or Create
 				</h3>
 
-				<p>We designed this connector specially for Android but you can use it in All Java applications. 
-				In Android OS not recommended use JDBC to connect external databases. All database connections are make in Post petitions
-				to PHP file. this connector solve it because all petitions to database are requested to PHP File in server side, and
-				if you use HTTPS protocol you enhancement security.
+				<a id="insert"></a>
+
+				<p>
+					<b>Insert data into table without returned inserted id</b>
 				</p>
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">InsertExample</b> {
+
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
+						class="var">args</b>) {
+
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
+						class="var">url</b>);
+
+		<b class="comment">// table name</b>
+		<b class="class">String</b> <b class="var">table</b> = <b
+						class="string">"tableOne"</b>;
+
+		<b class="comment">// values to insert</b>
+		<b class="class">ColumnSet</b> <b class="var">values</b> = <b
+						class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="var">values</b>.put(<b class="string">"to_fieldOne"</b>, <b
+						class="keyword">null</b>); <b class="comment">// Null because is an auto_increment id (this is not necessary with auto_increment keys)</b>
+		<b class="var">values</b>.put(<b class="string">"to_fieldTwo"</b>, <b
+						class="string">"Text value"</b>);
+		<b class="var">values</b>.put(<b class="string">"to_fieldThree"</b>, <b
+						class="keyword">true</b>);
+		<b class="var">values</b>.put(<b class="string">"to_fieldFour"</b>, 3589.64);
+
+		<b class="comment">// returnId => If true return last inserted id (only work with numeric id, otherwise return 0). If false, return the number affected rows</b>
+		<b class="keyword">boolean</b> <b class="var">returnId</b> = <b
+						class="keyword">false</b>;
+		
+		<b class="comment">// Insert values</b>
+		<b class="keyword">try</b> {
+			<b class="comment">// get result of insert values (Integer with number of rows because returnId is false)</b>
+			<b class="keyword">int</b> <b class="var">result</b> = <b class="var">db</b>.insert(<b
+						class="var">table</b>, <b class="var">values</b>, <b class="var">returnId</b>);
+			
+			<b class="comment">// check result value</b>
+			<b class="keyword">if</b> (<b class="var">result</b> > 0){
+				<b class="comment">// values inserted</b>
+			}
+			<b class="keyword">else</b>{
+				<b class="comment">// values not inserted</b>
+			}
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		}		
+	}
+}				
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
+
+				<p>
+					<b>Insert data into table with returned inserted id</b>
+				</p>
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">InsertExample</b> {
+
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
+						class="var">args</b>) {
+
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
+						class="var">url</b>);
+
+		<b class="comment">// table name</b>
+		<b class="class">String</b> <b class="var">table</b> = <b
+						class="string">"tableOne"</b>;
+
+		<b class="comment">// values to insert</b>
+		<b class="class">ColumnSet</b> <b class="var">values</b> = <b
+						class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="var">values</b>.put(<b class="string">"to_fieldOne"</b>, <b
+						class="keyword">null</b>); <b class="comment">// Null because is an auto_increment id (this is not necessary with auto_increment keys)</b>
+		<b class="var">values</b>.put(<b class="string">"to_fieldTwo"</b>, <b
+						class="string">"Text value"</b>);
+		<b class="var">values</b>.put(<b class="string">"to_fieldThree"</b>, <b
+						class="keyword">true</b>);
+		<b class="var">values</b>.put(<b class="string">"to_fieldFour"</b>, 3589.64);
+
+		<b class="comment">// returnId => If true return last inserted id (only work with numeric id, otherwise return 0). If false, return the number affected rows</b>
+		<b class="keyword">boolean</b> <b class="var">returnId</b> = <b
+						class="keyword">false</b>;
+		
+		<b class="comment">// Insert values</b>
+		<b class="keyword">try</b> {
+			<b class="comment">// get result of insert values (Integer with number of rows because returnId is false)</b>
+			<b class="keyword">int</b> <b class="var">result</b> = <b class="var">db</b>.insert(<b
+						class="var">table</b>, <b class="var">values</b>, <b class="var">returnId</b>);
+			
+			<b class="comment">// check result value</b>
+			<b class="keyword">if</b> (<b class="var">result</b> > 0){
+				<b class="comment">// values inserted</b>
+			}
+			<b class="keyword">else</b>{
+				<b class="comment">// values not inserted</b>
+			}
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
+						class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		}		
+	}
+}	
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
 
 				<h3>
 					<a id="creating-pages-manually" class="anchor"
 						href="#creating-pages-manually" aria-hidden="true"><span
-						class="octicon octicon-link"></span></a>Work with MVC easily
+						class="octicon octicon-link"></span></a>Update
 				</h3>
 
+				<a id="update"></a>
+
 				<p>
-				Java-Php Database connector was designed for work with Model-View-Controller pattern because have interfaces and methods
-				for transform quickly the data from database to a Model Class and transform Model class to database mapping values.
-				
+					<b>Update data with parameterized values</b>
 				</p>
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">UpdateExample</b> {
+
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
+
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
+
+		<b class="comment">// table name</b>
+		<b class="class">String</b> <b class="var">table</b> = <b class="string">"tableOne"</b>;
+
+		<b class="comment">// values to update</b>
+		<b class="class">ColumnSet</b> <b class="var">values</b> = <b class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="var">values</b>.put(<b class="string">"to_fieldTwo"</b>, <b class="string">"Text value (updated)"</b>);
+		<b class="var">values</b>.put(<b class="string">"to_fieldThree"</b>, <b class="keyword">false</b>);
+		<b class="var">values</b>.put(<b class="string">"to_fieldFour"</b>, 3589.65);
+
+		<b class="comment">// Where clause (mapping values with ":")</b>
+		<b class="class">String</b> <b class="var">where</b> = <b class="string">"to_fieldOne = :to_fieldOne"</b>;
+		
+		<b class="comment">// Where Args</b>
+		<b class="class">ColumnSet</b> <b class="var">whereArgs</b> = <b class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="var">whereArgs</b>.put(<b class="string">"to_fieldOne"</b>, 2);
+		
+		<b class="comment">// Update values</b>
+		<b class="keyword">try</b> {
+			<b class="comment">// get result of update values (Integer with number of affected rows)</b>
+			<b class="keyword">int</b> <b class="var">result</b> = <b class="var">db</b>.update(<b class="var">table</b>, <b class="var">values</b>, <b class="var">where</b>, <b class="var">whereArgs</b>);
+
+			<b class="comment">// check result value</b>
+			<b class="keyword">if</b> (<b class="var">result</b> > 0) {
+				<b class="comment">// values updated</b>
+			} <b class="keyword">else</b> {
+				<b class="comment">// values not updated</b>
+			}
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		}
+	}
+}
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
 
 				<h3>
 					<a id="authors-and-contributors" class="anchor"
 						href="#authors-and-contributors" aria-hidden="true"><span
-						class="octicon octicon-link"></span></a>Authors and Contributors
+						class="octicon octicon-link"></span></a>Delete
 				</h3>
 
-				<p>
-					This connector was designed by No Future Corporation(<a href="https://github.com/NoFutureCorporation" class="user-mention">@noFutureCorp</a>)
-					and Juan José Longoria (<a href="https://github.com/JJLongoria" class="user-mention">@Kanko</a>). In this project we use Third Party libraries
-					from Apache (Apache commons) and JSON Libraries in Java Side and, PDO Library in Server Side.
-				</p>
-
-				<h3>
-					<a id="support-or-contact" class="anchor"
-						href="#support-or-contact" aria-hidden="true"><span
-						class="octicon octicon-link"></span></a>Support or Contact
-				</h3>
+				<a id="delete"></a>
 
 				<p>
-				Having troubles or bugs? Please write to <a href="mailto:juanjoselongoria@gmail.com">Juan José Longoria (Author)</a> or <a href="mailto:nofuturecoorp@gmail.com">No Future Corporation (Company)</a>
-				If you solve the problem, publish changes in repository for make this project bigger and secure.
+					<b>Delete data with parameterized values</b>
 				</p>
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">DeleteExample</b> {
+
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
+
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
+
+		<b class="comment">// table name</b>
+		<b class="class">String</b> <b class="var">table</b> = <b class="string">"tableOne"</b>;
+
+		<b class="comment">// Where clause (mapping values with ":")</b>
+		<b class="class">String</b> <b class="var">where</b> = <b class="string">"to_fieldOne = :to_fieldOne"</b>;
+		
+		<b class="comment">// Where Args</b>
+		<b class="class">ColumnSet</b> <b class="var">whereArgs</b> = <b class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="var">whereArgs</b>.put(<b class="string">"to_fieldOne"</b>, 3);
+		
+		<b class="comment">// Delete values</b>
+		<b class="keyword">try</b> {
+			<b class="comment">// get result of delete rows (Integer with number of affected rows)</b>
+			<b class="keyword">int</b> <b class="var">result</b> = <b class="var">db</b>.delete(<b class="var">table</b>, <b class="var">where</b>, <b class="var">whereArgs</b>);
+
+			<b class="comment">// check result value</b>
+			<b class="keyword">if</b> (<b class="var">result</b> > 0) {
+				<b class="comment">// values deleted</b>
+			} <b class="keyword">else</b> {
+				<b class="comment">// values not delete</b>
+			}
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b class="var">e</b>) {
+			<b class="comment">// handler exception</b>
+		}
+	}
+}
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
+
 			</section>
 
 			<aside id="sidebar">
@@ -111,9 +591,13 @@
 					class="button"> <small>Download</small> .tar.gz file
 				</a>
 
+				<h2>Documentation</h2>
 				<ul>
 					<li><h3><a href="../index.html">Home</a></h3></li>
 					<li><h3><a href="crud.html">CRUD Operations</a></h3></li>
+					<li><h3><a href="transactions.html">Transactions</a></h3></li>
+					<li><h3><a href="exceptions.html">Exception Handling</a></h3></li>
+					<li><h3><a href="mvc.html">Working with MVC</a></h3></li>
 					<li><h3><a href="../javaDoc/index.html">Java Doc</a></h3></li>
 				</ul>
 

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href='https://fonts.googleapis.com/css?family=Architects+Daughter'
+	rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/stylesheet.css" media="screen">
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/github-light.css" media="screen">
+<link rel="stylesheet" type="text/css" href="../stylesheets/print.css"
+	media="print">
+<link rel="stylesheet" type="text/css" href="../stylesheets/code.css">
+<!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<title>Javaphpdbconnector by NoFutureCorporation</title>
+</head>
+
+<body>
+	<a id="top"></a>
+	<header>
+		<div class="inner">
+			<h1>Exception Handling</h1>
+			<h2>Java Php Db Connector throws only two Exceptions types and implement a easy method for handled it.
+			The most important exception is SQLException because it is the one that handles all exceptions contains the database.
+			The other exception is DatabaseException for handle App-PHP data transmission exceptions</h2>
+			<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"
+				class="button"><small>View project on</small> GitHub</a>
+		</div>
+	</header>
+
+	<div id="content-wrapper">
+		<div class="inner clearfix">
+			<section id="main-content">
+			
+				<h3>
+					<a id="welcome-to-github-pages" class="anchor"
+						href="#welcome-to-github-pages" aria-hidden="true"><span
+						class="octicon octicon-link"></span></a>SQLException and DatabaseException
+				</h3>
+
+				<p>
+					<b>Simple example about to handler exceptions</b>
+				</p>
+
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">HandleExceptionExample</b> {
+
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
+
+		<b class="comment">// This lines are not important in this example because the objective is the handled of exceptions, not manage the database</b>
+		
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
+		<b class="class">String</b> <b class="var">table</b> = <b class="string">"tableOne"</b>;
+		<b class="class">ColumnSet</b> <b class="var">values</b> = <b class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="keyword">boolean</b> <b class="var">returnId</b> = <b class="keyword">true</b>;		
+		
+		<b class="keyword">try</b> {
+			<b class="var">db</b>.insert(<b class="var">table</b>, <b class="var">values</b>, <b class="var">returnId</b>);
+			
+			<b class="comment">// This are the important lines in this example</b>
+			
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b class="var">e</b>) {
+			<b class="comment">// Exception throws when have an SQL error or warnings</b>
+			<b class="comment">// In a Exception message he wave a Database message</b>
+			
+			<b class="comment">// Also have a Enumeration with type of exception for handled it more easily	</b>		
+			<b class="enum">ExceptionType</b> <b class="var">exType</b> = <b class="var">e</b>.getType();
+			<b class="keyword">switch</b> (<b class="var">exType</b>) {
+			<b class="keyword">case</b> <b class="enumElement">dataTruncated</b>:
+				<b class="comment">// When data is truncated when try to put it in database</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">databaseNotConnect</b>:
+				<b class="comment">// When PHP file can't connect to database</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">duplicateEntry</b>:
+				<b class="comment">// When have a conflict with primary keys (PK duplicated)</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">foreignKeyConstraintFails</b>:
+				<b class="comment">// When have a conflict with foreign keys</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">invalidType</b>:
+				<b class="comment">// When try to put a data type in a wrong field (Example, insert varchar in a integer column)</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">notTransactionStarted</b>:
+				<b class="comment">// When call executeTransaction() and not call before startTransaction()</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">nullColumn</b>:
+				<b class="comment">// When try to put a null value in a not null column</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">nullTable</b>:
+				<b class="comment">// When table is null</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">nullValues</b>:
+				<b class="comment">// When mapping values are null</b>
+				<b class="keyword">break</b>
+			<b class="keyword">case</b> <b class="enumElement">syntaxError</b>:
+				<b class="comment">// When have an error syntax in a SQL statement</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">unknownColumn</b>:
+				<b class="comment">// When there is no column in the table affected</b>
+				<b class="keyword">break</b>;
+			<b class="keyword">case</b> <b class="enumElement">unknownError</b>:
+				<b class="comment">// When have an unknown error</b>
+				<b class="keyword">break</b>;
+			
+			}
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b class="var">e</b>) {
+			<b class="comment">// This exception throws if have an error when try to get data from PHP file</b>
+			<b class="comment">// In the exception message we have more information of the Exception cause</b>
+		}
+	}
+}
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
+
+			</section>
+
+			<aside id="sidebar">
+				<a
+					href="https://github.com/NoFutureCorporation/JavaPhpDbConnector/zipball/master"
+					class="button"> <small>Download</small> .zip file
+				</a> <a
+					href="https://github.com/NoFutureCorporation/JavaPhpDbConnector/tarball/master"
+					class="button"> <small>Download</small> .tar.gz file
+				</a>
+
+				<h2>Documentation</h2>
+				<ul>
+					<li><h3><a href="../index.html">Home</a></h3></li>
+					<li><h3><a href="crud.html">CRUD Operations</a></h3></li>
+					<li><h3><a href="transactions.html">Transactions</a></h3></li>
+					<li><h3><a href="exceptions.html">Exception Handling</a></h3></li>
+					<li><h3><a href="../javaDoc/index.html">Java Doc</a></h3></li>
+				</ul>
+
+				<p class="repo-owner">
+					<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"></a>
+					is maintained by <a href="https://github.com/NoFutureCorporation">NoFutureCorporation</a>.
+				</p>
+
+				<p>
+					This page was generated by <a href="https://pages.github.com">GitHub
+						Pages</a> using the Architect theme by <a
+						href="https://twitter.com/jasonlong">Jason Long</a>.
+				</p>
+			</aside>
+		</div>
+	</div>
+</body>
+</html>

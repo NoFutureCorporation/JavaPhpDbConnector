@@ -1,0 +1,114 @@
+.code {
+	color: black;
+	font-family: monospace;
+	font-weight: normal;
+}
+
+.string {
+	color: #0431B4;
+	font-weight: normal;
+}
+
+.enumElement {
+	color: #0431B4;
+	font-weight: bold;
+}
+
+.number {
+	font-weight: normal;
+}
+
+.bool {
+	color: #0040FF;
+	font-weight: bold;
+}
+
+.class {
+	color: #0B3B17;
+	font-weight: bold;
+}
+
+.keyword {
+	color: #B40486;
+	font-weight: bold;
+}
+
+.enum {
+	color: #0B3B17;
+	font-weight: normal;
+}
+
+.comment {
+	color: #0B610B;
+	font-weight: normal;
+}
+
+.var {
+	color: #5F4C0B;
+	font-weight: normal;
+}
+
+.override {
+	color: gray;
+	font-weight: normal;
+}
+
+.btn {
+	color: #FFFFFF;
+	background-color: #317AD6;
+	border-color: #DEDEDE;
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 10px;
+	padding: 15px 15px;
+	margin-bottom: 20px;
+	display: block;
+	width: 60px;
+	text-align: center;
+	font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial,
+		serif;
+}
+
+.top {
+	color: #FFFFFF;
+	background-color: #317AD6;
+	border-color: #DEDEDE;
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 10px;
+	padding: 15px 15px;
+	margin-bottom: 20px;
+	display: block;
+	width: 75px;
+	text-align: center;
+	font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial,
+		serif;
+}
+
+.btn:HOVER {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.top:HOVER {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.nav {
+	margin: 0 auto;
+	width: 80%;
+	text-align: center;
+	border-radius: 8px;
+}
+
+.navElement {
+	height: auto;
+	padding: 8px 0px;
+	margin: 0px
+}
+
+.navItem {
+	display: inline-block;
+	padding: 20px;
+}

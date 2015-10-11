@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href='https://fonts.googleapis.com/css?family=Architects+Daughter'
+	rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/stylesheet.css" media="screen">
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/github-light.css" media="screen">
+<link rel="stylesheet" type="text/css" href="../stylesheets/print.css"
+	media="print">
+<link rel="stylesheet" type="text/css" href="../stylesheets/code.css">
+<!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<title>Javaphpdbconnector by NoFutureCorporation</title>
+</head>
+
+<body>
+	<a id="top"></a>
+	<header>
+		<div class="inner">
+			<h1>Transactions</h1>
+			<h2>Java Php Db Connector has a simple method for execute transactions. 
+			A transaction is a way to run a series of operations atomically , 
+			reversing the process if it does not run properly</h2>
+			<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"
+				class="button"><small>View project on</small> GitHub</a>
+		</div>
+	</header>
+
+	<div id="content-wrapper">
+		<div class="inner clearfix">
+			<section id="main-content">
+			
+				<h3>
+					<a id="welcome-to-github-pages" class="anchor"
+						href="#welcome-to-github-pages" aria-hidden="true"><span
+						class="octicon octicon-link"></span></a>Working with Transactions
+				</h3>
+
+				<p>
+					<b>Simple example of Transactions</b>
+				</p>
+
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">TransactionExample</b> {
+
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
+		
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php";</b>
+		
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
+		
+		<b class="comment">// Table Names</b>
+		<b class="class">String</b> <b class="var">tableOne</b> = <b class="string">"tableOne";</b>
+		<b class="class">String</b> <b class="var">tableTwo</b> = <b class="string">"tableTwo";</b>
+		
+		<b class="comment">// Values for table One</b>
+		<b class="class">ColumnSet</b> <b class="var">valuesOne</b> = <b class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="var">valuesOne</b>.put(<b class="string">"to_fieldOne"</b>, <b class="keyword">null</b>);	<b class="comment">// Null because primary key is auto increment (if key is auto increment, this is not necessary)</b>
+		<b class="var">valuesOne</b>.put(<b class="string">"to_fieldTwo"</b>, <b class="string">"Text Value"</b>);
+		<b class="var">valuesOne</b>.put(<b class="string">"to_fieldThree"</b>, <b class="keyword">true</b>);
+		<b class="var">valuesOne</b>.put(<b class="string">"to_fieldFour"</b>, 56.26);
+		
+		<b class="comment">// Values for table Two</b>
+		<b class="class">ColumnSet</b> <b class="var">valuesTwo</b> = <b class="keyword">new</b> <b class="class">ColumnSet</b>();
+		<b class="var">valuesTwo</b>.put(<b class="string">"tt_fieldOne"</b>, <b class="keyword">null</b>);	<b class="comment">// Null because primary key is auto increment (if key is auto increment, this is not necessary)</b>
+		<b class="var">valuesTwo</b>.put(<b class="string">"tt_fieldTwo"</b>, <b class="keyword">true</b>);
+		<b class="var">valuesTwo</b>.put(<b class="string">"tt_fieldThree"</b>, 3);
+		<b class="var">valuesTwo</b>.put(<b class="string">"tt_fieldFour"</b>, <b class="string">"Text value"</b>);
+		
+		<b class="comment">// Return last id (In transaction is the same set returnId to true or false because transaction only return boolean value)</b>
+		<b class="keyword">boolean</b> <b class="var">returnId</b> = <b class="keyword">false</b>;
+		
+		<b class="comment">// Start a new transaction</b>
+		<b class="var">db</b>.startTransaction();
+		
+		<b class="keyword">try</b> {
+			<b class="comment">// Insert data in table one</b>
+			<b class="var">db</b>.insert(<b class="var">tableOne</b>, <b class="var">valuesOne</b>, <b class="var">returnId</b>);
+			
+			<b class="comment">// Insert data in table two</b>
+			<b class="var">db</b>.insert(<b class="var">tableTwo</b>, <b class="var">valuesTwo</b>, <b class="var">returnId</b>);
+			
+			<b class="comment">// Get result of execute transaction (true if transaction is OK, false in otherwise and make auto rollback)</b>
+			<b class="keyword">boolean</b> <b class="var">resultOk</b> = <b class="var">db</b>.executeTransaction();
+			
+			<b class="keyword">if</b>(<b class="var">resultOk</b>){
+				<b class="comment">// Transaction executed properly</b>
+			}
+			<b class="keyword">else</b>{
+				<b class="comment">// Transaction not executed properly</b>
+			}			
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b class="var">e</b>) {
+			<b class="comment">// Hander exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b class="var">e</b>) {
+			<b class="comment">// Handler exception</b>
+		}	
+	}
+}
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
+
+			</section>
+
+			<aside id="sidebar">
+				<a
+					href="https://github.com/NoFutureCorporation/JavaPhpDbConnector/zipball/master"
+					class="button"> <small>Download</small> .zip file
+				</a> <a
+					href="https://github.com/NoFutureCorporation/JavaPhpDbConnector/tarball/master"
+					class="button"> <small>Download</small> .tar.gz file
+				</a>
+
+				<h2>Documentation</h2>
+				<ul>
+					<li><h3><a href="../index.html">Home</a></h3></li>
+					<li><h3><a href="crud.html">CRUD Operations</a></h3></li>
+					<li><h3><a href="transactions.html">Transactions</a></h3></li>
+					<li><h3><a href="exceptions.html">Exception Handling</a></h3></li>
+					<li><h3><a href="mvc.html">Working with MVC</a></h3></li>
+					<li><h3><a href="../javaDoc/index.html">Java Doc</a></h3></li>
+				</ul>
+
+				<p class="repo-owner">
+					<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"></a>
+					is maintained by <a href="https://github.com/NoFutureCorporation">NoFutureCorporation</a>.
+				</p>
+
+				<p>
+					This page was generated by <a href="https://pages.github.com">GitHub
+						Pages</a> using the Architect theme by <a
+						href="https://twitter.com/jasonlong">Jason Long</a>.
+				</p>
+			</aside>
+		</div>
+	</div>
+
+
+</body>
+</html>

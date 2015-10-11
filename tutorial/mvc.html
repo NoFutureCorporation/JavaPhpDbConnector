@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href='https://fonts.googleapis.com/css?family=Architects+Daughter'
+	rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/stylesheet.css" media="screen">
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/github-light.css" media="screen">
+<link rel="stylesheet" type="text/css" href="../stylesheets/print.css"
+	media="print">
+<link rel="stylesheet" type="text/css" href="../stylesheets/code.css">
+<!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<title>Javaphpdbconnector by NoFutureCorporation</title>
+</head>
+
+<body>
+	<a id="top"></a>
+	<header>
+		<div class="inner">
+			<h1>Transactions</h1>
+			<h2>Java Php Db Connector has a simple method for execute transactions. 
+			A transaction is a way to run a series of operations atomically , 
+			reversing the process if it does not run properly</h2>
+			<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"
+				class="button"><small>View project on</small> GitHub</a>
+		</div>
+	</header>
+
+	<div id="content-wrapper">
+		<div class="inner clearfix">
+			<section id="main-content">
+			
+				<div class="nav">
+					<ul class="navElement">
+						<li class="navItem"><a class="btn" href="#model">Model</a></li>
+						<li class="navItem"><a class="btn" href="#usage">Usage</a></li>
+					</ul>
+				</div>
+			
+				<a id="model"></a>
+			
+				<h3>
+					<a id="welcome-to-github-pages" class="anchor"
+						href="#welcome-to-github-pages" aria-hidden="true"><span
+						class="octicon octicon-link"></span></a>Implements Model Class
+				</h3>			
+
+				<p>
+					<b>Create a model class. Implements Model interface with two methods (fromSQL() and toSQL())</b>
+				</p>
+
+				<pre class="code">
+				
+<b class="keyword">public class</b> <b class="class">TableOne</b> <b class="keyword">implements</b> <b class="class">Model</b>{
+	
+	<b class="comment">// CONSTANTS WITH COLUMN AND TABLE NAMES</b>
+	
+	<b class="keyword">public static final</b> <b class="class">String</b> <b class="enumElement">TABLE</b> = <b class="string">"tableOne"</b>;
+	<b class="keyword">public static final</b> <b class="class">String</b> <b class="enumElement">FIELD_ONE</b> = <b class="string">"to_fieldOne"</b>;
+	<b class="keyword">public static final</b> <b class="class">String</b> <b class="enumElement">FIELD_TWO</b> = <b class="string">"to_fieldTwo"</b>;
+	<b class="keyword">public static final</b> <b class="class">String</b> <b class="enumElement">FIELD_THREE</b> = <b class="string">"to_fieldThree"</b>;
+	<b class="keyword">public static final</b> <b class="class">String</b> <b class="enumElement">FIELD_FOUR</b> = <b class="string">"to_fieldFour"</b>;
+	
+	
+	<b class="comment">// FIELDS</b>
+	
+	<b class="keyword">private int</b> <b class="string">fieldOne</b>;
+	<b class="keyword">private</b> <b class="class">String</b> <b class="string">fieldTwo</b>;
+	<b class="keyword">private boolean</b> <b class="string">fieldThree</b>;
+	<b class="keyword">private double</b> <b class="string">fieldFour</b>;
+	
+	
+	<b class="comment">// GETTERS AND SETTERS...</b>
+	
+	<b class="comment">// CONSTRUCTORS</b>
+	
+	<b class="keyword">public</b> <b class="class">TableOne</b>() {
+		<b class="comment">// Initialize primary key at -1 because is an auto_increment key</b>
+		<b class="string">fieldOne</b> = -1; 
+	}
+	
+	<b class="comment">// Constructor for initialize object with ColumnSet from database</b>
+	<b class="keyword">public</b> <b class="class">TableOne</b>(<b class="class">ColumnSet</b> <b class="var">columnSet</b>){
+		fromSQL(<b class="var">columnSet</b>);
+	}
+	
+	<b class="comment">// METHODS FROM Model INTERFACE</b>
+	
+	<b class="override">@Override</b>
+	<b class="keyword">public void</b> fromSQL(<b class="class">ColumnSet</b> <b class="var">columnSet</b>) {
+		
+		<b class="comment">// Get values from columnSet</b>
+		
+		<b class="string">fieldOne</b> = <b class="var">columnSet</b>.getInt(<b class="enumElement">FIELD_ONE</b>);		<b class="comment">// Get Integer value from fieldOne Column</b>
+		<b class="string">fieldTwo</b> = <b class="var">columnSet</b>.getString(<b class="enumElement">FIELD_TWO</b>);	<b class="comment">// Get String value from fieldTne Column</b>
+		<b class="string">fieldThree</b> = <b class="var">columnSet</b>.getBoolean(<b class="enumElement">FIELD_THREE</b>);	<b class="comment">// Get Boolean value from fieldThree Column</b>
+		<b class="string">fieldFour</b> = <b class="var">columnSet</b>.getDouble(<b class="enumElement">FIELD_FOUR</b>);	<b class="comment">// Get Double value from fieldFour Column</b>
+	}
+
+	<b class="override">@Override</b>
+	<b class="keyword">public</b> <b class="class">ColumnSet</b> toSQL() {
+		<b class="comment">// Mapping values for database</b>
+
+		<b class="class">ColumnSet</b> <b class="var">values</b> = <b class="keyword">new</b> <b class="class">ColumnSet</b>();
+		
+		<b class="comment">// Check if primary key is lower than 0 (auto_increment field, if not auto_increment, design other check method)</b>
+		<b class="keyword">if</b>(<b class="string">fieldOne</b> < 0){
+			<b class="var">values</b>.put(<b class="enumElement">FIELD_ONE</b>, <b class="keyword">null</b>);
+		}
+		<b class="keyword">else</b>{
+			<b class="var">values</b>.put(<b class="enumElement">FIELD_ONE</b>, <b class="string">fieldOne</b>);
+		}
+		<b class="var">values</b>.put(<b class="enumElement">FIELD_TWO</b>, <b class="string">fieldTwo</b>);
+		<b class="var">values</b>.put(<b class="enumElement">FIELD_THREE</b>, <b class="string">fieldThree</b>);
+		<b class="var">values</b>.put(<b class="enumElement">FIELD_FOUR</b>, <b class="string">fieldFour</b>);		
+		
+		<b class="keyword">return</b> <b class="var">values</b>;
+	}	
+}
+
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
+
+				<a id="usage"></a>
+
+				<h3>
+					<a id="welcome-to-github-pages" class="anchor"
+						href="#welcome-to-github-pages" aria-hidden="true"><span
+						class="octicon octicon-link"></span></a>Usage Model Class
+				</h3>
+
+				
+
+				<p>
+					<b>Example about use the model class with Database</b>
+				</p>
+
+				<pre class="code">
+<b class="keyword">public class</b> <b class="class">MVCExample</b> {
+	
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
+		
+		<b class="comment">// URL to PHP file in server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php";</b>
+		
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
+		
+		<b class="comment">// Initialize an ArrayList for stored all data in tableOne</b>
+		<b class="class">ArrayList</b>&lt;<b class="class">TableOne</b>&GT; <b class="var">list</b> = <b class="keyword">new</b> <b class="class">ArrayList</b>&lt;<b class="class">TableOne</b>&GT;();
+		
+		<b class="keyword">try</b> {
+			<b class="comment">// get all data of tableOne</b>
+			<b class="class">DataSet</b> <b class="var">set</b> = <b class="var">db</b>.query(<b class="class">TableOne</b>.<b class="enumElement">TABLE</b>, <b class="keyword">null</b>, <b class="keyword">null</b>, <b class="keyword">null</b>, <b class="keyword">null</b>, <b class="keyword">null</b>, <b class="keyword">nul</b>, <b class="keyword">null</b>);
+			
+			<b class="comment">// check result</b>
+			<b class="keyword">if</b>(<b class="var">set</b>.rowCount() > 0){
+				<b class="keyword">for</b> (<b class="class">ColumnSet</b> <b class="var">columnSet</b> : <b class="var">set</b>) {
+					<b class="comment">// Populate list with data</b>
+					<b class="var">list</b>.add(<b class="keyword">new</b> <b class="class">TableOne</b>(<b class="var">columnSet</b>));
+				}
+			}	
+			
+			<b class="comment">// Do something with data</b>
+			
+			<b class="comment">// Create model to insert in database</b>
+			<b class="class">TableOne</b>  <b class="var">tOne</b> = <b class="keyword">new</b> <b class="class">TableOne</b>();
+			<b class="var">tOne</b>.setFieldTwo(<b class="string">"Field Two Value"</b>);
+			<b class="var">tOne</b>.setFieldThree(<b class="keyword">false</b>);
+			<b class="var">tOne</b>.setFieldFour(569.56);
+			
+			<b class="comment">// Insert data</b>
+			<b class="keyword">int</b> <b class="var">result</b> = <b class="var">db</b>.insert(<b class="class">TableOne</b>.<b class="enumElement">TABLE</b>, <b class="var">tOne</b>.toSQL(), <b class="keyword">false</b>);
+			
+			<b class="comment">// Check result</b>
+			<b class="keyword">if</b>(<b class="var">result</b> > 0){
+				<b class="comment">// data inserted</b>
+			}
+			<b class="keyword">else</b>{
+				<b class="comment">// not data inserted</b>
+			}	
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b class="var">e</b>) {
+			<b class="comment">// handling exception</b>
+		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b class="var">e</b>) {
+			<b class="comment">// handling exception</b>
+		}	
+	}
+}
+				</pre>
+
+				<a class="top" href="#top">Go to top</a>
+
+			</section>
+
+			<aside id="sidebar">
+				<a
+					href="https://github.com/NoFutureCorporation/JavaPhpDbConnector/zipball/master"
+					class="button"> <small>Download</small> .zip file
+				</a> <a
+					href="https://github.com/NoFutureCorporation/JavaPhpDbConnector/tarball/master"
+					class="button"> <small>Download</small> .tar.gz file
+				</a>
+
+				<h2>Documentation</h2>
+				<ul>
+					<li><h3><a href="../index.html">Home</a></h3></li>
+					<li><h3><a href="crud.html">CRUD Operations</a></h3></li>
+					<li><h3><a href="transactions.html">Transactions</a></h3></li>
+					<li><h3><a href="exceptions.html">Exception Handling</a></h3></li>
+					<li><h3><a href="mvc.html">Working with MVC</a></h3></li>
+					<li><h3><a href="../javaDoc/index.html">Java Doc</a></h3></li>
+				</ul>
+
+				<p class="repo-owner">
+					<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"></a>
+					is maintained by <a href="https://github.com/NoFutureCorporation">NoFutureCorporation</a>.
+				</p>
+
+				<p>
+					This page was generated by <a href="https://pages.github.com">GitHub
+						Pages</a> using the Architect theme by <a
+						href="https://twitter.com/jasonlong">Jason Long</a>.
+				</p>
+			</aside>
+		</div>
+	</div>
+
+
+</body>
+</html>
