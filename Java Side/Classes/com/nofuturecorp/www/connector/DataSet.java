@@ -21,6 +21,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.nofuturecorp.www.connector.interfaces.JSONTransform;
+
 /**
  * Class to store the extracted rows of a query. The elements can be extracted from various different ways, 
  * similar to a list but also as a cursor (like an Android) or other iterable elements
@@ -178,12 +180,14 @@ public class DataSet implements JSONTransform, Iterable<ColumnSet>, Serializable
 	
 	public DataSet(JSONArray json) throws JSONException{
 		this();
-		fromJSONArray(json);
+		if(json != null)
+			fromJSONArray(json);
 	}
 	
 	public DataSet(JSONObject json) throws JSONException{
 		this();
-		fromJSON(json);
+		if(json != null)
+			fromJSON(json);
 	}
 	
 	// PRIVATE METHODS

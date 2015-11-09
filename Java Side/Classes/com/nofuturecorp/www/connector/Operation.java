@@ -19,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.nofuturecorp.www.connector.interfaces.JSONTransform;
+
 /**
  * Class that encapsulates all the data needed to be converted into JSON and send operations to the database
  * @author Juan José Longoria López
@@ -37,6 +39,7 @@ class Operation implements JSONTransform, Serializable {
 	public static final int STORED_PROCEDURE = 4;
 	public static final int STORED_FUNCTION = 5;
 	public static final int RAW_QUERY = 6;
+	public static final int SCRIPT = 7;
 
 	
 	// FIELDS
@@ -283,7 +286,7 @@ class Operation implements JSONTransform, Serializable {
 	 * @param limit
 	 * @return query operation
 	 */
-	public static Operation getQueryOperation(String table,String[] projection, String where, ColumnSet whereArgs, String groupBy, String having, String orderBy, int limit){
+	public static Operation getQueryOperation(String table,String[] projection, String where, ColumnSet whereArgs, String groupBy, String having, String orderBy, Integer limit){
 		Operation operation = new Operation(SELECT);
 		operation.table = table;
 		operation.projection = projection;
@@ -369,6 +372,16 @@ class Operation implements JSONTransform, Serializable {
 		return operation;
 	}
 
+	/**
+	 * Return execute Script operation
+	 * @param script
+	 * @return execute Script Operation
+	 */
+	public static Operation getExecuteScriptOperation(String script){
+		Operation operation = new Operation(SCRIPT);
+		operation.statement = script;
+		return operation;
+	}
 	
 	// OVERRIDE METHODS
 	

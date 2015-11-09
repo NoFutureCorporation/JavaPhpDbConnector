@@ -16,6 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.nofuturecorp.www.connector.exceptions.DatabaseException;
+import com.nofuturecorp.www.connector.exceptions.SQLException;
+
 /**
  * Class for get and handling database responses
  * @author Juan José Longoria López
@@ -142,7 +145,9 @@ public class DatabaseResponse {
 	 * @throws JSONException
 	 * @throws SQLException
 	 */
-	public DatabaseResponse(JSONObject data) throws JSONException, SQLException {
+	public DatabaseResponse(JSONObject data) throws DatabaseException, SQLException {
+		
+		try{
 		try{
 			this.code = data.getInt("code");
 		}
@@ -174,12 +179,16 @@ public class DatabaseResponse {
 		} catch (JSONException e) {
 			exception = null;
 		}
+		}
+		catch(JSONException e){
+			throw new DatabaseException("An error ocurred when try to get data from database -> " + e.getMessage());
+		}
 		
 	}
 
 	@Override
 	public String toString() {
-		return "DatabaseResponse [code=" + code + ", message=" + message + ", data=" + data + ", dataCount=" + dataCount + ", dataBoolean=" + dataBoolean + ", exception=" + exception + "]";
+		return "DatabaseResponse\n[code=" + code + "\nmessage=" + message + "\ndata=" + data + "\ndataCount=" + dataCount + "\ndataBoolean=" + dataBoolean + "\nexception=" + exception + "]";
 	}
 
 

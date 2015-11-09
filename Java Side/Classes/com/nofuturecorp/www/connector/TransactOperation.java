@@ -19,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.nofuturecorp.www.connector.interfaces.JSONTransform;
+
 /**
  * Class that encapsulates all the data needed to be converted into JSON and send operations to the database in transaction
  * @author Juan José Longoria López

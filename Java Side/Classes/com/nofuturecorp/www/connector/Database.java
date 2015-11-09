@@ -13,22 +13,21 @@
 package com.nofuturecorp.www.connector;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.net.URL;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.nofuturecorp.www.connector.exceptions.DatabaseException;
+import com.nofuturecorp.www.connector.exceptions.SQLException;
+import com.nofuturecorp.www.connector.exceptions.SQLException.ExceptionType;
+import com.nofuturecorp.www.connector.exceptions.SecureProtocolException;
 
 /**
  * Class for connect to MySQL Database
@@ -37,6 +36,7 @@ import org.json.JSONObject;
  */
 public class Database {
 
+	
 	// FIELDS
 
 	private String url;
@@ -45,7 +45,8 @@ public class Database {
 	private String message;
 	private boolean isTransaction;
 	private TransactOperation transactOperation;
-
+	private boolean ignoreSecureProtocol;
+	
 	
 	// GETTERS AND SETTERS
 
@@ -80,6 +81,22 @@ public class Database {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	
+	/**
+	 * Set ignore secure protocol (HTTPS) to not throw SecureProtocolException
+	 * @param ignoreSecureProtocol
+	 */
+	public void setSecureProtocolIgnored(boolean ignoreSecureProtocol) {
+		this.ignoreSecureProtocol = ignoreSecureProtocol;
+	}
+	
+	/**
+	 * Check if secure protocol (HTTPS) is ignored or not
+	 * @return
+	 */
+	public boolean isSecureProtocolIgnored() {
+		return ignoreSecureProtocol;
+	}
 
 	
 	// CONSTRUCTORS
@@ -102,48 +119,50 @@ public class Database {
 		}
 		return singleton;
 	}
-
+	
 	
 	// PRIVATE METHODS
-
+		
 	/**
-	 * Make a post request to the PHP url for process request and get data in JSON format
-	 * @param path
+	 * Make a post request to the PHP URL for process request and get data in JSON format
 	 * @param json with data to send
-	 * @return JSON with data
-	 * @throws ClientProtocolException
+	 * @return JSON with data received
 	 * @throws IOException
+	 * @throws DatabaseException 
 	 */
-	private String makePostRequest(String path, String json) throws ClientProtocolException, IOException {
-		if (path == null) {
-			throw new NullPointerException("path cannot be null");
-		}
+	private String makePostRequest(String json) throws IOException, DatabaseException {
+		
 		if (json == null) {
 			throw new NullPointerException("json cannot be null");
 		}
-		StringBuilder data = null;
-		HttpClient client = HttpClientBuilder.create().build();
-		HttpPost postRequest = new HttpPost(url);
+		if(!ignoreSecureProtocol && url.toUpperCase().startsWith("HTTPS")){
+			throw new SecureProtocolException("URL Protocol is not valid. Please use HTTPS or set true ignore secure protocol");
+		}
 		
-		ArrayList<NameValuePair> values = new ArrayList<>();
-		values.add(new BasicNameValuePair("isTransaction", String.valueOf(isTransaction)));
-		values.add(new BasicNameValuePair("data", json));
-		postRequest.addHeader("content-type", "application/json");
-	    postRequest.addHeader("Accept","application/json");
-		postRequest.setEntity(new StringEntity("isTransaction="+isTransaction+"&data="+json));
-		HttpResponse response = client.execute(postRequest);
-						
-		if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+		StringBuffer data = null;
+		URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setDoOutput(true);
+        
+        OutputStream os = con.getOutputStream();
+        os.write(("isTransaction="+isTransaction+"&data="+json).getBytes());
+        os.flush();
+        os.close();
+        
+		int response = con.getResponseCode();
+		if (response == HttpURLConnection.HTTP_OK) {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream(),"UTF-8"));
 			String line = null;
-			data = new StringBuilder();
+			data = new StringBuffer();
 			while ((line = reader.readLine()) != null) {
 				data.append(line);
-			}
+			}			
 			String js = data.substring(data.indexOf("{"));
 			return js;
 		} else {
-			return null;
+			throw new DatabaseException("HTTP connection fails. Response code: " + response);
 		}
 	}
 
@@ -151,12 +170,16 @@ public class Database {
 	 * Execute a transaction
 	 * @param transactOperation
 	 * @return true if transaction execute properly or false in otherwise
-	 * @throws IOException
-	 * @throws JSONException
 	 * @throws SQLException
+	 * @throws DatabaseException 
 	 */
-	private boolean transactOperation(TransactOperation transactOperation) throws IOException, JSONException, SQLException {
-		String json = makePostRequest(url, transactOperation.toString());
+	private boolean transactOperation(TransactOperation transactOperation) throws SQLException, DatabaseException {
+		String json = null;
+		try {
+			json = makePostRequest(transactOperation.toString());
+		} catch (IOException e) {
+			throw new DatabaseException("An error ocurred when try to get data from database -> " + e.getMessage());
+		}
 		if (json != null) {
 			DatabaseResponse response = new DatabaseResponse(new JSONObject(json));
 			message = response.getMessage();
@@ -166,22 +189,26 @@ public class Database {
 			return false;
 		}
 	}
-
-
+	
+	
 	// PUBLIC METHODS
 
 	/**
-	 * Execute a stored procedures or functions in database with parameterized values
+	 * Execute a stored procedures or functions in database with parameterised values
 	 * @param statement
 	 * @param bindValues
 	 * @return Database Response with data
-	 * @throws IOException
-	 * @throws JSONException
 	 * @throws SQLException
+	 * @throws DatabaseException 
 	 */
-	public DatabaseResponse execute(String statement, ColumnSet bindValues) throws IOException, JSONException, SQLException {
+	public DatabaseResponse execute(String statement, ColumnSet bindValues) throws SQLException, DatabaseException {
 		Operation operation = Operation.getExecuteOperation(statement, bindValues);
-		String json = makePostRequest(url, operation.toJSON().toString());
+		String json;
+		try {
+			json = makePostRequest(operation.toJSON().toString());
+		} catch (JSONException | IOException e) {
+			throw new DatabaseException("An error ocurred when try to execute statement into database -> " + e.getMessage());
+		}
 		if (json != null) {
 			DatabaseResponse response = new DatabaseResponse(new JSONObject(json));
 			message = response.getMessage();
@@ -194,17 +221,21 @@ public class Database {
 	}
 
 	/**
-	 * Execute a raw query in database with parameterized values
+	 * Execute a raw query in database with parameterised values
 	 * @param statement
 	 * @param bindValues
-	 * @return
-	 * @throws IOException
-	 * @throws JSONException
+	 * @return DataSet with result of query
 	 * @throws SQLException
+	 * @throws DatabaseException 
 	 */
-	public DataSet rawQuery(String statement, ColumnSet bindValues) throws IOException, JSONException, SQLException {
+	public DataSet rawQuery(String statement, ColumnSet bindValues) throws SQLException, DatabaseException {
 		Operation operation = Operation.getRawQueryOperation(statement, bindValues);
-		String json = makePostRequest(url, operation.toJSON().toString());
+		String json;
+		try {
+			json = makePostRequest(operation.toJSON().toString());
+		} catch (JSONException | IOException e) {
+			throw new DatabaseException("An error ocurred when try to get data from database -> " + e.getMessage());
+		}
 		if (json != null) {
 			DatabaseResponse response = new DatabaseResponse(new JSONObject(json));
 			message = response.getMessage();
@@ -217,7 +248,7 @@ public class Database {
 	}
 
 	/**
-	 * Execute a parameterized query in database
+	 * Execute a parameterised query in database
 	 * 
 	 * @param table
 	 * @param projection (if null return all columns)
@@ -228,13 +259,17 @@ public class Database {
 	 * @param orderBy (allow null)
 	 * @param limit (allow null)
 	 * @return DataSet with result of query
-	 * @throws JSONException
-	 * @throws IOException
 	 * @throws SQLException
+	 * @throws DatabaseException 
 	 */
-	public DataSet query(String table, String[] projection, String where, ColumnSet whereArgs, String groupBy, String having, String orderBy, Integer limit) throws JSONException, IOException, SQLException {
+	public DataSet query(String table, String[] projection, String where, ColumnSet whereArgs, String groupBy, String having, String orderBy, Integer limit) throws SQLException, DatabaseException {
 		Operation operation = Operation.getQueryOperation(table, projection, where, whereArgs, groupBy, having, orderBy, limit);
-		String json = makePostRequest(url, operation.toJSON().toString());
+		String json;
+		try {
+			json = makePostRequest(operation.toJSON().toString());
+		} catch (JSONException | IOException e) {
+			throw new DatabaseException("An error ocurred when try to get data from database -> " + e.getMessage());
+		}
 		if (json != null) {
 			DatabaseResponse response = new DatabaseResponse(new JSONObject(json));
 			message = response.getMessage();
@@ -246,23 +281,26 @@ public class Database {
 	}
 
 	/**
-	 * Execute a parameterized insert operation in database
+	 * Execute a parameterised insert operation in database
 	 * @param table
 	 * @param values (Can`t be null)
 	 * @param returnId (true if need to return the last inserted id or false for return the number affected rows)
 	 * @return Return an integer with the number affected rows (if returnId is false) or last inserted id if is numeric(if returnId is true, if not numeric primary, return 0)
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws JSONException
 	 * @throws SQLException
+	 * @throws DatabaseException 
 	 */
-	public int insert(String table, ColumnSet values, boolean returnId) throws URISyntaxException, IOException, JSONException, SQLException {
+	public int insert(String table, ColumnSet values, boolean returnId) throws SQLException, DatabaseException {
 		Operation operation = Operation.getInsertOperation(table, values, returnId);
 		if (isTransaction) {
 			transactOperation.add(operation);
 			return -1;
 		} else {
-			String json = makePostRequest(url, operation.toJSON().toString());
+			String json;
+			try {
+				json = makePostRequest(operation.toJSON().toString());
+			} catch (JSONException | IOException e) {
+				throw new DatabaseException("An error ocurred when try to insert data into database -> " + e.getMessage());
+			}
 			if (json != null) {
 				DatabaseResponse response = new DatabaseResponse(new JSONObject(json));
 				message = response.getMessage();
@@ -273,25 +311,29 @@ public class Database {
 			}
 		}
 	}
-
+	
 	/**
-	 * Execute a parameterized update operation in database 
+	 * Execute a parameterised update operation in database 
 	 * @param table
 	 * @param values 
 	 * @param where (Allow null)
 	 * @param whereArgs (Allow null)
 	 * @return Integer with the number of affected rows
-	 * @throws IOException
-	 * @throws JSONException
 	 * @throws SQLException
+	 * @throws DatabaseException 
 	 */
-	public int update(String table, ColumnSet values, String where, ColumnSet whereArgs) throws  IOException, JSONException, SQLException {
+	public int update(String table, ColumnSet values, String where, ColumnSet whereArgs) throws SQLException, DatabaseException {
 		Operation operation = Operation.getUpdateOperation(table, values, where, whereArgs);
 		if (isTransaction) {
 			transactOperation.add(operation);
 			return -1;
 		} else {
-			String json = makePostRequest(url, operation.toJSON().toString());
+			String json;
+			try {
+				json = makePostRequest(operation.toJSON().toString());
+			} catch (JSONException | IOException e) {
+				throw new DatabaseException("An error ocurred when try to update data from database -> " + e.getMessage());
+			}
 			if (json != null) {
 				DatabaseResponse response = new DatabaseResponse(new JSONObject(json));
 				message = response.getMessage();
@@ -304,22 +346,26 @@ public class Database {
 	}
 
 	/**
-	 * Execute a parameterized delete operation in database 
+	 * Execute a parameterised delete operation in database 
 	 * @param table
 	 * @param where
 	 * @param whereArgs
 	 * @return Integer with the number of affected rows
-	 * @throws IOException
-	 * @throws JSONException
 	 * @throws SQLException
+	 * @throws DatabaseException 
 	 */
-	public int delete(String table, String where, ColumnSet whereArgs) throws  IOException, JSONException, SQLException {
+	public int delete(String table, String where, ColumnSet whereArgs) throws SQLException, DatabaseException {
 		Operation operation = Operation.getDeleteOperation(table, where, whereArgs);
 		if (isTransaction) {
 			transactOperation.add(operation);
 			return -1;
 		} else {
-			String json = makePostRequest(url, operation.toJSON().toString());
+			String json;
+			try {
+				json = makePostRequest(operation.toJSON().toString());
+			} catch (JSONException | IOException e) {
+				throw new DatabaseException("An error ocurred when try to delete data from database -> " + e.getMessage());
+			}
 			if (json != null) {
 				DatabaseResponse response = new DatabaseResponse(new JSONObject(json));
 				message = response.getMessage();
@@ -331,6 +377,44 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Execute a SQL Script into Database
+	 * @param scriptPath
+	 * @throws SQLException
+	 * @throws DatabaseException
+	 * @throws IOException 
+	 */
+	public void executeScript(String scriptPath) throws  SQLException, DatabaseException, IOException {
+		StringBuffer sb = new StringBuffer();
+		File script = new File(scriptPath);
+		BufferedReader reader = new BufferedReader(new FileReader(script));
+		String line = "";
+		while ((line = reader.readLine()) != null) {
+			sb.append(line + "\n");
+		}
+		reader.close();
+		Operation operation = Operation.getExecuteScriptOperation(sb.toString());
+		if(isTransaction){
+			transactOperation.add(operation);
+			return;
+		}
+		else{
+			String json;
+			try {
+				json = makePostRequest(operation.toJSON().toString());
+			} catch (JSONException | IOException e) {
+				throw new DatabaseException("An error ocurred when try to execute script: " + scriptPath + " -> " + e.getMessage());
+			}
+			if (json != null) {
+				DatabaseResponse response = new DatabaseResponse(new JSONObject(json));
+				message = response.getMessage();
+				code = response.getCode();
+			} else {
+				throw new DatabaseException("An error ocurred when try to execute script: " + scriptPath);
+			}
+		}
+	}
+	
 	/**
 	 * Start transaction
 	 */
@@ -353,16 +437,18 @@ public class Database {
 	 * @throws IOException
 	 * @throws JSONException
 	 * @throws SQLException
+	 * @throws DatabaseException 
 	 */
-	public boolean executeTransaction() throws IOException, JSONException, SQLException {
+	public boolean executeTransaction() throws SQLException, DatabaseException {
+		boolean result = false;
 		if (isTransaction) {
-			boolean result = transactOperation(transactOperation);
+			result = transactOperation(transactOperation);
 			isTransaction = false;
 			transactOperation = null;
-			return result;
 		} else {
-			return false;
+			throw new SQLException("There is no current transaction , you must first call startTransaction()",ExceptionType.notTransactionStarted.getCode());
 		}
+		return result;
 	}
 
 }
