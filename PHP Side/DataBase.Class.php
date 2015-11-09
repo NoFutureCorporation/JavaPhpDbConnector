@@ -32,7 +32,6 @@ class MySQLDataBase {
     private $keyInvolved = "";
     private $returnId = false;
     private $exception = null;
-    private $pdoOptions = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
 
 
     //---------------//
@@ -106,6 +105,7 @@ class MySQLDataBase {
         try {
             if (!$this->isOpenDB()) {
                 $this->db = new PDO($this->mysql_dsn, $this->username, $this->password);
+                $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, 1);
             }
         } catch (PDOException $exc) {
             $this->responseCode = -1;
@@ -190,6 +190,9 @@ class MySQLDataBase {
             case MySQLOperation::RAW_QUERY:
                 $result = $this->rawQuery($operation->getStatement(), $operation->getBindValues());
                 break;
+            case MySQLOperation::SCRIPT:
+                $result = $this->executeScript($operation->getStatement());
+                break;
         }
         return $result;
     }
@@ -206,7 +209,7 @@ class MySQLDataBase {
         foreach ($operations as $value) {
             if ($value instanceof MySQLOperation) {
                 $result = $this->executeOperation($value);
-                if (is_null($result) || $result < 0) {
+                if (is_null($result) || $result < 0 || $result === false) {
                     $this->rollbackTransaction();
                     return false;
                 }
@@ -230,7 +233,7 @@ class MySQLDataBase {
      * @return return data or null in case of error
      * @throws Exception in case of statement null or empty
      */
-    public function execute($statement, $bindValues) {
+    private function execute($statement, $bindValues) {
         if ($this->isOpenDB()) {
             if (is_null($statement) || empty($statement)) {
                 throw new Exception("statement cannot be null or empty", null, null);
@@ -253,7 +256,7 @@ class MySQLDataBase {
      * @return Array with data or null
      * @throws Exception in case of query is null or empty
      */
-    public function rawQuery($query, $bindValues) {
+    private function rawQuery($query, $bindValues) {
         if ($this->isOpenDB()) {
             if (is_null($query) || empty($query)) {
                 throw new Exception("query cannot be null or empty", null, null);
@@ -283,7 +286,7 @@ class MySQLDataBase {
      * @return Array with data or null (Array => [row1 => [column1 => value1, 0 => value1, column2 => value2, 1 => value2, ...]])
      * @throws Exception if $table is null or is empty
      */
-    public function query($table, $projection, $selection, $selectionArgs, $groupBy, $having, $orderBy, $limit) {
+    private function query($table, $projection, $selection, $selectionArgs, $groupBy, $having, $orderBy, $limit) {
         if ($this->isOpenDB()) {
             $sql = "select";
 
@@ -357,7 +360,7 @@ class MySQLDataBase {
      * @return Integer number of row affected or -1 in case of error
      * @throws Exception if $table or $values are null or empty
      */
-    public function insert($table, $values) {
+    private function insert($table, $values) {
         if ($this->isOpenDB()) {
             if (is_null($table) || empty($table)) {
                 $this->exception = ExceptionCodes::NULL_TABLE;
@@ -408,7 +411,7 @@ class MySQLDataBase {
      * @return Integer number of row affected or -1 in case of error
      * @throws Exception if $table or $values are null or empty
      */
-    public function update($table, $values, $where, $whereArgs) {
+    private function update($table, $values, $where, $whereArgs) {
 
         if ($this->isOpenDB()) {
             if (is_null($table) || empty($table)) {
@@ -465,7 +468,7 @@ class MySQLDataBase {
      * @return Integer number of row affected or -1 in case of error
      * @throws Exception if table is null or empty
      */
-    public function delete($table, $where, $whereArgs) {
+    private function delete($table, $where, $whereArgs) {
         if ($this->isOpenDB()) {
             if (is_null($table) || empty($table)) {
                 $this->exception = ExceptionCodes::NULL_TABLE;
@@ -495,6 +498,46 @@ class MySQLDataBase {
         }
     }
 
+    /**
+     * Execute Scrit into Database
+     * @param type $script
+     * @return boolean
+     * @throws Exception
+     */
+    private function executeScript($script){
+        if($this->isOpenDB()){
+            if(is_null($script) || empty($script)){
+                $this->exception = ExceptionCodes::NULL_SCRIPT;
+                throw new Exception("Script cannot be null or empty", NULL, NULL);
+            }
+            
+            $statement = $this->getPreparedStatement($script);
+            $statement->execute();
+            $i = 0;
+            
+            do {
+                $i++;
+            } while ($statement->nextRowset());
+
+            $error = $statement->errorInfo();
+            if ($error[0] != "00000") {                
+                $this->dbMessage = "Statement ". $i ." failed: " . $error[2];
+                $this->responseCode = $error[0];
+                $this->exception = ExceptionCodes::SCRIPT_ERROR;
+                return false;
+            }
+            else{
+                $this->dbMessage = "Script executed properly";
+                $this->responseCode = 0;
+                $this->exception = null;
+                return true;
+            }            
+        }
+        else{
+            $this->exception = ExceptionCodes::DATABASE_NOT_CONNECT;
+            return -1;
+        }
+    }
 
     //-----------------------------//
     //  PREPARE STATEMENT METHODS  //
@@ -746,6 +789,7 @@ class MySQLOperation {
     const STORED_PROCEDURE = 4;
     const STORED_FUNCTION = 5;
     const RAW_QUERY = 6;
+    const SCRIPT = 7;
 
     
     //----------//
@@ -1076,6 +1120,8 @@ class ExceptionCodes{
     const NULL_COLUMN = 8;
     const INVALID_VALUE = 9;
     const DATA_TRUNCATED = 11;
+    const NULL_SCRIPT = 12;
+    const SCRIPT_ERROR = 13;
     
     
 }

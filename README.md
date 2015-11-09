@@ -12,7 +12,16 @@ Supported SQL Exceptions.
 
 Supported Raw Queries and Call Functions.
 
+# Version 1.1:
+
+Supported Stored Procedures
+
+Force to use HTTPS Protocol for security (can disable if you need)
+
+Remove Apache support libraries
+
+Support Execute Script Files into database
 
 
 
-Not Supported call to store procedures.
+
