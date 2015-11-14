@@ -18,7 +18,7 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-<title>Javaphpdbconnector by NoFutureCorporation</title>
+<title>Java-Php Database Connector by No Future Corporation</title>
 </head>
 
 <body>
@@ -26,9 +26,8 @@
 	<header>
 		<div class="inner">
 			<h1>Exception Handling</h1>
-			<h2>Java Php Db Connector throws only two Exceptions types and implement a easy method for handled it.
-			The most important exception is SQLException because it is the one that handles all exceptions contains the database.
-			The other exception is DatabaseException for handle App-PHP data transmission exceptions</h2>
+			<h2>Java-Php Database Connector Has different types of exceptions for error handling, the two most importants are SQLException and DatabaseException.
+			The first is to control everything about SQL errors, the second is to control communication errors with the server.</h2>
 			<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"
 				class="button"><small>View project on</small> GitHub</a>
 		</div>
@@ -45,7 +44,7 @@
 				</h3>
 
 				<p>
-					<b>Simple example about to handler exceptions</b>
+					<b>Simple example of exception handling</b>
 				</p>
 
 				<pre class="code">
@@ -53,9 +52,9 @@
 
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
 
-		<b class="comment">// This lines are not important in this example because the objective is the handled of exceptions, not manage the database</b>
+		<b class="comment">// This lines are not important in this example because the objective is the exception handling, not manage the database</b>
 		
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
 		<b class="class">String</b> <b class="var">table</b> = <b class="string">"tableOne"</b>;
 		<b class="class">ColumnSet</b> <b class="var">values</b> = <b class="keyword">new</b> <b class="class">ColumnSet</b>();

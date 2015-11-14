@@ -18,7 +18,7 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-<title>Javaphpdbconnector by NoFutureCorporation</title>
+<title>Java-Php Database Connector by No Future Corporation</title>
 </head>
 
 <body>
@@ -27,10 +27,10 @@
 		<div class="inner">
 			<h1>CRUD Operations</h1>
 			<h2>CRUD operations are the most typical operations in a
-				database. CRUD means Create, Read, Update and Delete. In SQL are
-				Insert, Select, Update and Delete commands. In this section, we will
-				explain how to make this operations with Java-Php Database
-				Connector. They are very easy!</h2>
+				database. CRUD means Create, Read, Update and Delete, In SQL are
+				Insert, Select, Update and Delete commands. 
+				In this section we explain how to perform these operations with Java-Php Database Connector. 
+				They are very easy !</h2>
 			<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"
 				class="button"><small>View project on</small> GitHub</a>
 		</div>
@@ -58,7 +58,7 @@
 				</h3>
 
 				<p>
-					<b>Example with basic query for get all data of one table</b>
+					<b>Basic example of a query to get all the data in a table</b>
 				</p>
 				<pre class="code">
 <b class="keyword">public class</b> <b class="class">SelectExample</b> {
@@ -66,8 +66,8 @@
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
 						class="var">args</b>) {
 		
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 		
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
@@ -79,8 +79,8 @@
 				
 		<b class="comment">// Query</b>
 		<b class="keyword">try</b> {
-			<b class="comment">// Get data returned in a DataSet. 
-			//All values are null except the table name for retrieve all values of all rows</b>
+			<b class="comment">// We obtain the returned data in a DataSet
+			// All parameters are null except the name of the table to get all columns of all rows.</b>
 			<b class="class">DataSet</b> <b class="var">set</b> = <b class="var">db</b>.query(<b
 						class="var">tableOne</b>, <b class="keyword">null</b>, <b
 						class="keyword">null</b>, <b class="keyword">null</b>, <b
@@ -110,10 +110,10 @@
 			
 		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// Handler exception</b>
+			<b class="comment">// Handle exception</b>
 		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// Handler exception</b>
+			<b class="comment">// Handle exception</b>
 		}		
 	}
 }
@@ -149,16 +149,15 @@
 				<a class="top" href="#top">Go to top</a>
 
 				<p>
-					<b>Example for parameterized query with column projection and
-						where clause with where arguments</b>
+					<b>Example of a parameterized query with projection columns and "WHERE" clause with "WHERE ARGUMENTS"</b>
 				<pre class="code">
 <b class="keyword">public class</b> <b class="class">SelectExample</b> {
 
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
 						class="var">args</b>) {
 		
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php";</b>
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 		
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
@@ -168,7 +167,7 @@
 		<b class="class">String</b> <b class="var">tableOne</b> = <b
 						class="string">"tableOne"</b>;
 		
-		<b class="comment">// projection with only three columns</b>
+		<b class="comment">// Projection with only three columns</b>
 		<b class="class">String</b>[] <b class="var">projection</b> = { <b
 						class="string">"to_fieldOne"</b>, <b class="string">"to_fieldTwo"</b>, <b
 						class="string">"to_fieldFour"</b> };
@@ -200,7 +199,7 @@
 				
 		<b class="comment">// Query</b>
 		<b class="keyword">try</b> {
-			<b class="comment">// Get data returned in a DataSet</b>
+			<b class="comment">// We obtain the returned data in a DataSet</b>
 			<b class="class">DataSet</b> <b class="var">set</b> = <b class="var">db</b>.query(<b
 						class="var">tableOne</b>, <b class="var">projection</b>, <b
 						class="var">where</b>, <b class="var">whereArgs</b>, <b
@@ -225,10 +224,10 @@
 			
 		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// Handler exception</b>
+			<b class="comment">// Handle exception</b>
 		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// Handler exception</b>
+			<b class="comment">// Handle exception</b>
 		}
 	}
 }
@@ -248,8 +247,7 @@
 				<a class="top" href="#top">Go to top</a>
 
 				<p>
-					<b>Example with parameterized query with two tables and join
-						operation </b>
+					<b>Example of a parameterized query with projection columns with two tables and join operation</b>
 				</p>
 				<pre class="code">
 				
@@ -258,8 +256,8 @@
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
 						class="var">args</b>) {
 		
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 		
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
@@ -292,7 +290,7 @@
 		
 		<b class="comment">// Query</b>
 		<b class="keyword">try</b> {
-			<b class="comment">// Get data returned in a DataSet</b>
+			<b class="comment">// We obtain the returned data in a DataSet</b>
 			<b class="class">DataSet</b> <b class="var">set</b> = <b class="var">db</b>.query(join, projection, where, whereArgs, null, null, null, null);
 			
 			<b class="keyword">for</b> (<b class="class">ColumnSet</b> <b
@@ -313,10 +311,10 @@
 			
 		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		}	
 	}
 }
@@ -345,7 +343,7 @@
 				<a id="insert"></a>
 
 				<p>
-					<b>Insert data into table without returned inserted id</b>
+					<b>Example to insert data into a table without returning the inserted id (returns the number of rows affected)</b>
 				</p>
 				<pre class="code">
 <b class="keyword">public class</b> <b class="class">InsertExample</b> {
@@ -353,8 +351,8 @@
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
 						class="var">args</b>) {
 
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
@@ -375,7 +373,7 @@
 						class="keyword">true</b>);
 		<b class="var">values</b>.put(<b class="string">"to_fieldFour"</b>, 3589.64);
 
-		<b class="comment">// returnId => If true return last inserted id (only work with numeric id, otherwise return 0). If false, return the number affected rows</b>
+		<b class="comment">// returnId => If true return the last inserted id (only work with numeric id, otherwise return 0). If false, return the number of rows affected</b>
 		<b class="keyword">boolean</b> <b class="var">returnId</b> = <b
 						class="keyword">false</b>;
 		
@@ -394,10 +392,10 @@
 			}
 		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		}		
 	}
 }				
@@ -406,7 +404,7 @@
 				<a class="top" href="#top">Go to top</a>
 
 				<p>
-					<b>Insert data into table with returned inserted id</b>
+					<b>Example to insert data into a table with returning the inserted id (not returns the number of rows affected)</b>
 				</p>
 				<pre class="code">
 <b class="keyword">public class</b> <b class="class">InsertExample</b> {
@@ -414,8 +412,8 @@
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b
 						class="var">args</b>) {
 
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
@@ -436,7 +434,7 @@
 						class="keyword">true</b>);
 		<b class="var">values</b>.put(<b class="string">"to_fieldFour"</b>, 3589.64);
 
-		<b class="comment">// returnId => If true return last inserted id (only work with numeric id, otherwise return 0). If false, return the number affected rows</b>
+		<b class="comment">// returnId => If true return last inserted id (only work with numeric id, otherwise return 0). If false, return the number of rows affected</b>
 		<b class="keyword">boolean</b> <b class="var">returnId</b> = <b
 						class="keyword">false</b>;
 		
@@ -455,10 +453,10 @@
 			}
 		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b
 						class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		}		
 	}
 }	
@@ -475,15 +473,15 @@
 				<a id="update"></a>
 
 				<p>
-					<b>Update data with parameterized values</b>
+					<b>Example to update data with parameterized values</b>
 				</p>
 				<pre class="code">
 <b class="keyword">public class</b> <b class="class">UpdateExample</b> {
 
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
 
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
@@ -506,7 +504,7 @@
 		
 		<b class="comment">// Update values</b>
 		<b class="keyword">try</b> {
-			<b class="comment">// get result of update values (Integer with number of affected rows)</b>
+			<b class="comment">// get result of update values (Integer with number of rows affected)</b>
 			<b class="keyword">int</b> <b class="var">result</b> = <b class="var">db</b>.update(<b class="var">table</b>, <b class="var">values</b>, <b class="var">where</b>, <b class="var">whereArgs</b>);
 
 			<b class="comment">// check result value</b>
@@ -516,9 +514,9 @@
 				<b class="comment">// values not updated</b>
 			}
 		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		}
 	}
 }
@@ -535,15 +533,15 @@
 				<a id="delete"></a>
 
 				<p>
-					<b>Delete data with parameterized values</b>
+					<b>Example to delete data with parameterized values</b>
 				</p>
 				<pre class="code">
 <b class="keyword">public class</b> <b class="class">DeleteExample</b> {
 
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
 
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php"</b>;
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
@@ -560,7 +558,7 @@
 		
 		<b class="comment">// Delete values</b>
 		<b class="keyword">try</b> {
-			<b class="comment">// get result of delete rows (Integer with number of affected rows)</b>
+			<b class="comment">// get result of delete rows (Integer with number of rows affected)</b>
 			<b class="keyword">int</b> <b class="var">result</b> = <b class="var">db</b>.delete(<b class="var">table</b>, <b class="var">where</b>, <b class="var">whereArgs</b>);
 
 			<b class="comment">// check result value</b>
@@ -570,9 +568,9 @@
 				<b class="comment">// values not delete</b>
 			}
 		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b class="var">e</b>) {
-			<b class="comment">// handler exception</b>
+			<b class="comment">// handle exception</b>
 		}
 	}
 }

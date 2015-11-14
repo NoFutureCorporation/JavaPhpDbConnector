@@ -18,17 +18,16 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-<title>Javaphpdbconnector by NoFutureCorporation</title>
+<title>Java-Php Database Connector by No Future Corporation</title>
 </head>
 
 <body>
 	<a id="top"></a>
 	<header>
 		<div class="inner">
-			<h1>Transactions</h1>
-			<h2>Java Php Db Connector has a simple method for execute transactions. 
-			A transaction is a way to run a series of operations atomically , 
-			reversing the process if it does not run properly</h2>
+			<h1>Work With MVC</h1>
+			<h2>Java Php Db Connector has interfaces that facilitate working with the MVC pattern and the transformation 
+			the data of the database to the model class and map the data into the model class to the database.</h2>
 			<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"
 				class="button"><small>View project on</small> GitHub</a>
 		</div>
@@ -141,7 +140,7 @@
 				
 
 				<p>
-					<b>Example about use the model class with Database</b>
+					<b>Example of use of the model class with the database</b>
 				</p>
 
 				<pre class="code">
@@ -149,8 +148,8 @@
 	
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
 		
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php";</b>
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 		
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
@@ -189,9 +188,9 @@
 				<b class="comment">// not data inserted</b>
 			}	
 		} <b class="keyword">catch</b> (<b class="class">SQLException</b> <b class="var">e</b>) {
-			<b class="comment">// handling exception</b>
+			<b class="comment">// handle exception</b>
 		} <b class="keyword">catch</b> (<b class="class">DatabaseException</b> <b class="var">e</b>) {
-			<b class="comment">// handling exception</b>
+			<b class="comment">// handle exception</b>
 		}	
 	}
 }
