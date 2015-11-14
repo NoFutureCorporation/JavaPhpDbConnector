@@ -3,11 +3,16 @@
 <head>
 <meta charset='utf-8'>
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
-<link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
-<link rel="stylesheet" type="text/css" href="../stylesheets/print.css" media="print">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href='https://fonts.googleapis.com/css?family=Architects+Daughter'
+	rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/stylesheet.css" media="screen">
+<link rel="stylesheet" type="text/css"
+	href="../stylesheets/github-light.css" media="screen">
+<link rel="stylesheet" type="text/css" href="../stylesheets/print.css"
+	media="print">
 <link rel="stylesheet" type="text/css" href="../stylesheets/code.css">
 <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -20,8 +25,8 @@
 	<a id="top"></a>
 	<header>
 		<div class="inner">
-			<h1>Install</h1>
-			<h2>The installation process is divided into two steps, one on the server side (PHP) and one on the client side (Java). Both steps are really simple.</h2>
+			<h1>SQL Scripts</h1>
+			<h2>Java-Php Database Connector also implemented the ability to run scripts from a file to create the database, insert large volumes of data, etc.</h2>
 			<a href="https://github.com/NoFutureCorporation/JavaPhpDbConnector"
 				class="button"><small>View project on</small> GitHub</a>
 		</div>
@@ -34,38 +39,39 @@
 				<h3>
 					<a id="welcome-to-github-pages" class="anchor"
 						href="#welcome-to-github-pages" aria-hidden="true"><span
-						class="octicon octicon-link"></span></a>Server Side (PHP)
+						class="octicon octicon-link"></span></a>Run a SQL Script
 				</h3>
 
 				<p>
-					On the server side, only need to copy the both PHP files into the same folder and later, configure the RequestHandler.php file with your database credentials
+					<b>Simple example of run a SQL script</b>
 				</p>
-				<p><b>RequestHandler.php</b></p>
+
 				<pre class="code">
-<b class="comment">//
-//  IMPORTANT INFO FOR CONFIG AND ACCESS TO DATABASE
-//
+<b class="keyword">public class</b> <b class="class">ScriptExample</b> {
 
-// DB DATA</b>
-<b class="var">$dbType</b> = <b class="string">"mysql"</b>;
-<b class="var">$dbName</b> = <b class="string">"test"</b>;		<b class="comment">// Name of the Database</b>
-<b class="var">$host</b> = <b class="string">"127.0.0.1"</b>;		<b class="comment">// Host</b>
-<b class="var">$charset</b> = <b class="string">"UTF8"</b>;		<b class="comment">// Encoding</b>
-<b class="var">$username</b> = <b class="string">"YourDBUser"</b>;	<b class="comment">// Database Username</b>
-<b class="var">$password</b> = <b class="string">"YourDBPassword"</b>;	<b class="comment">// Database Password</b>
+	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
+
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
+		
+		<b class="comment">// Get a database instance (singleton)</b>
+		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b
+						class="var">url</b>);
+						
+		<b class="comment">// Set Secure protocol ignored to true because we use HTTP protocol in
+		// this example (for security use HTTPS protocol)</b>
+		<b class="var">db</b>.setSecureProtocolIgnored(<b class="keyword">true</b>);	
+		
+		<b class="keyword">try</b> {
+			<b class="var">db</b>.executeScript(<b class="string">"./script.sql"</b>);			
+			<b class="comment">// The executeScript() method not return anything because if the Script fail, always thrown an Exception.</b>
+			
+		} <b class="keyword">catch</b> (<b class="class">SQLException</b> | <b class="class">DatabaseException</b> | <b class="class">IOException</b> <b class="var">e</b>) {
+			<b class="comment">// Handle exception</b>
+		}
+	}
+}
 				</pre>
-
-				<a class="top" href="#top">Go to top</a>
-
-				<h3>
-					<a id="welcome-to-github-pages" class="anchor"
-						href="#welcome-to-github-pages" aria-hidden="true"><span
-						class="octicon octicon-link"></span></a>Client Side (Java)
-				</h3>
-
-				<p>
-					In this step, only need to reference <b>"JavaPhpDbConnector.jar"</b> on your Java Project as other libraries.
-				</p>
 
 				<a class="top" href="#top">Go to top</a>
 

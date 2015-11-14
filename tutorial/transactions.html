@@ -51,11 +51,15 @@
 
 	<b class="keyword">public static void</b> main(<b class="class">String</b>[] <b class="var">args</b>) {
 		
-		<b class="comment">// URL to PHP file in server</b>
-		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/PetitionHandler.php";</b>
+		<b class="comment">// URL to the PHP file on the server</b>
+		<b class="class">String</b> <b class="var">url</b> = <b class="string">"http://localhost/www/projects/Java_Php_DBConnector/RequestHandler.php"</b>;
 		
 		<b class="comment">// Get a database instance (singleton)</b>
 		<b class="class">Database</b> <b class="var">db</b> = <b class="class">Database</b>.getInstance(<b class="var">url</b>);
+		
+		<b class="comment">// Set Secure protocol ignored to true because we use HTTP protocol in
+		// this example (for security use HTTPS protocol)</b>
+		<b class="var">db</b>.setSecureProtocolIgnored(<b class="keyword">true</b>);
 		
 		<b class="comment">// Table Names</b>
 		<b class="class">String</b> <b class="var">tableOne</b> = <b class="string">"tableOne";</b>
@@ -127,6 +131,7 @@
 					<li><h3><a href="transactions.html">Transactions</a></h3></li>
 					<li><h3><a href="exceptions.html">Exception Handling</a></h3></li>
 					<li><h3><a href="mvc.html">Working with MVC</a></h3></li>
+					<li><h3><a href="script.html">Run SQL Script</a></h3></li>
 					<li><h3><a href="../javaDoc/index.html">Java Doc</a></h3></li>
 				</ul>
 
